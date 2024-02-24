@@ -21,6 +21,7 @@ class TweetController extends Controller
    */
   public function index()
   {
+    $this->authorize('viewAny', Tweet::class);
     $tweets = $this->tweetService->allTweets();
     return view('tweets.index', compact('tweets'));
   }
@@ -30,6 +31,7 @@ class TweetController extends Controller
    */
   public function create()
   {
+    $this->authorize('create', Tweet::class);
     return view('tweets.create');
   }
 
@@ -38,6 +40,7 @@ class TweetController extends Controller
    */
   public function store(StoreTweetRequest $request)
   {
+    $this->authorize('create', Tweet::class);
     $tweet = $this->tweetService->createTweet($request->only('tweet'), $request->user());
 
     return redirect()->route('tweets.index');
@@ -48,6 +51,7 @@ class TweetController extends Controller
    */
   public function show(Tweet $tweet)
   {
+    $this->authorize('view', $tweet);
     return view('tweets.show', compact('tweet'));
   }
 
@@ -56,6 +60,7 @@ class TweetController extends Controller
    */
   public function edit(Tweet $tweet)
   {
+    $this->authorize('update', $tweet);
     return view('tweets.edit', compact('tweet'));
   }
 
@@ -64,6 +69,7 @@ class TweetController extends Controller
    */
   public function update(UpdateTweetRequest $request, Tweet $tweet)
   {
+    $this->authorize('update', $tweet);
     $updatedTweet = $this->tweetService->updateTweet($tweet, $request->all());
 
     return redirect()->route('tweets.show', $tweet);
@@ -74,6 +80,7 @@ class TweetController extends Controller
    */
   public function destroy(Tweet $tweet)
   {
+    $this->authorize('delete', $tweet);
     $this->tweetService->deleteTweet($tweet);
 
     return redirect()->route('tweets.index');

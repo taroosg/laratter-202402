@@ -22,6 +22,7 @@ class TweetController extends Controller
    */
   public function index()
   {
+    $this->authorize('viewAny', Tweet::class);
     $tweets = $this->tweetService->allTweets();
     return response()->json($tweets);
   }
@@ -31,6 +32,7 @@ class TweetController extends Controller
    */
   public function store(StoreTweetRequest $request)
   {
+    $this->authorize('create', Tweet::class);
     $tweet = $this->tweetService->createTweet($request->only('tweet'), $request->user());
     return response()->json($tweet, 201);
   }
@@ -40,6 +42,7 @@ class TweetController extends Controller
    */
   public function show(Tweet $tweet)
   {
+    $this->authorize('view', $tweet);
     return response()->json($tweet);
   }
 
@@ -48,6 +51,7 @@ class TweetController extends Controller
    */
   public function update(UpdateTweetRequest $request, Tweet $tweet)
   {
+    $this->authorize('update', $tweet);
     $updatedTweet = $this->tweetService->updateTweet($tweet, $request->all());
 
     return response()->json($tweet);
@@ -57,6 +61,7 @@ class TweetController extends Controller
    */
   public function destroy(Tweet $tweet)
   {
+    $this->authorize('delete', $tweet);
     $this->tweetService->deleteTweet($tweet);
     return response()->json(['message' => 'Tweet deleted successfully']);
   }
